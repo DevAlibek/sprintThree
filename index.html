@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <title></title>
+        <style>
+            .error{
+                border: 2px solid red;
+            }
+            #successMessage{
+                color: green;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; align-items: center;">
+            <div style="width: 500px;">
+                <div>Введите сумму:</div>
+                <input onkeyup="convert()" type="number" id = "amount" placeholder="5000">
+                <label>Валюта</label>
+                <select id="selectCurrency" onchange="convert()">
+                    <option value="KZT">KZT</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                </select>
+                <label>Тип:</label>
+                <select id="selectBuyAndSell" onchange="convert()">
+                    <option value="buy">Покупка</option>
+                    <option value="sell">Продажа</option>
+                </select>
+            </div>  
+          
+            <div style="display: flex; width: 600px;justify-content: space-between;">
+                <div>
+                    <div>KZT (tenge)</div>
+                <input disabled id="kzResult" placeholder="0.0"></input>
+                </div>
+                <div>
+                    <div>USD (dollar)</div>
+                    <input  disabled id="usdResult"></input>
+                </div>
+                <div>
+                    <div>EUR (euro) </div>
+                    <input  disabled id="eurResult"></input>
+                </div> 
+            </div>
+        </div>
+        
+
+        <script>
+            function convert(){
+                let buyAndSell = { 
+                    USD: {buy: 429, sell:431},
+                    EUR: {buy: 507, sell:509}
+                }
+                let amount = parseFloat(document.getElementById('amount').value);
+                let selectBuyAndSell = document.getElementById('selectBuyAndSell').value;
+                let selectCurrency = document.getElementById('selectCurrency').value;
+                let result = document.getElementById("result");
+                let usd;
+                let eur;
+                let kzt;
+                if (isNaN(amount) || amount <= 0) {
+                    usd = 0;
+                    eur = 0;
+                    kzt = 0;
+                }
+                else{
+                    if(selectCurrency === 'KZT')
+                    {
+                        kzt = "-";
+                        if(selectBuyAndSell == 'buy')
+                        {
+                            usd = (amount/buyAndSell.USD.buy).toFixed(2);
+                            eur = (amount/buyAndSell.EUR.buy).toFixed(2);
+                        }
+                        else if (selectBuyAndSell == 'sell'){
+                            usd = (amount/buyAndSell.USD.sell).toFixed(2);
+                            eur = (amount/buyAndSell.EUR.sell).toFixed(2);
+                        }
+                    }
+                    else if (selectCurrency === 'USD'){
+                        usd = "-";
+                        if(selectBuyAndSell == 'buy')
+                        {
+                            kzt = (amount * buyAndSell.USD.buy).toFixed(2);
+                            eur = ((amount*buyAndSell.USD.buy)/buyAndSell.EUR.buy).toFixed(2);
+                        }
+                        else if (selectBuyAndSell == 'sell'){
+                            kzt = (amount * buyAndSell.USD.sell).toFixed(2);
+                            eur = ((amount*buyAndSell.EUR.sell)/buyAndSell.EUR.sell).toFixed(2);
+                        }
+                    }
+                    else if (selectCurrency === 'EUR'){
+                        eur = "-";
+                        if(selectBuyAndSell == 'buy')
+                        {
+                            kzt = (amount * buyAndSell.EUR.buy).toFixed(2);
+                            usd = ((amount * buyAndSell.EUR.buy) / buyAndSell.USD.buy).toFixed(2);
+                        }
+                        else if (selectBuyAndSell == 'sell'){
+                            kzt = (amount * buyAndSell.EUR.sell).toFixed(2);
+                            usd = ((amount * buyAndSell.EUR.sell) / buyAndSell.USD.sell).toFixed(2);
+                        }
+                    }
+                }
+                
+                console.log(usd + " " + eur)
+                document.getElementById('usdResult').value = usd;
+                document.getElementById('eurResult').value = eur;
+                document.getElementById('kzResult').value = kzt;
+            }
+        </script>
+    </body>
+</html>
